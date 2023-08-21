@@ -34,6 +34,7 @@ const createAndSendToken = async (user, statusCode, res) => {
         // expires: new Date(Date.now() + 1 * 60 * 1000),
         httpOnly: true,
         credentials: true,
+        secure: true,
     };
 
     //   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
