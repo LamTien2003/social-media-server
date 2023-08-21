@@ -32,6 +32,7 @@ const createAndSendToken = async (user, statusCode, res) => {
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
         // expires: new Date(Date.now() + 1 * 60 * 1000),
+        // Must set for credentials to set cookie for client
         httpOnly: true,
         sameSite: 'none',
         secure: true,
@@ -114,7 +115,7 @@ exports.logout = catchAsync(async (req, res, next) => {
         return next(new AppError('Người dùng này hiện không còn tồn tại', 401));
     }
     user.refreshToken = undefined;
-    await user.save();
+    await user.save({ validateBeforeSave: false });
 
     res.clearCookie('jwt');
 
