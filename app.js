@@ -16,6 +16,8 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const route = require('./routes/index');
+const socketIo = require('./socket');
+
 // Environment Variable Config
 dotenv.config({ path: './config.env' });
 
@@ -32,6 +34,7 @@ mongoose
     .catch(() => console.log('Fail to connect with Database !!!'));
 
 const app = express();
+
 // Config Middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -81,6 +84,19 @@ app.all('*', (req, res, next) => {
 app.use(globalErrorHandler);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`App running on port ${port}...`);
 });
+
+// Config Socket
+const io = require('socket.io')(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+        // allowedHeaders: ['my-custom-header'],
+        credentials: true,
+    },
+});
+
+socketIo(io);

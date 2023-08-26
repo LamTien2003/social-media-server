@@ -114,8 +114,6 @@ userSchema.virtual('reportsCount', {
     count: true,
 });
 userSchema.pre(/^find/, function (next) {
-    this.populate('reportsCount');
-    this.populate('postsCount');
     this.select('-__v -createdAt -updatedAt');
     next();
 });

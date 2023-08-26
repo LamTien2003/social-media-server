@@ -6,6 +6,7 @@ const AppError = require('../utils/appError');
 
 const { sendResponseToClient } = require('../utils/ultils');
 const User = require('../model/userModel');
+const Notification = require('../model/notificationModel');
 
 exports.findAllPost = catchAsync(async (req, res, next) => {
     const posts = await Post.find()
@@ -103,6 +104,15 @@ exports.reactPost = catchAsync(async (req, res, next) => {
     }
 
     await post.save();
+
+    if (req.user._id.toString() !== post.user.toString()) {
+        await Notification.create({
+            sender: req.user._id,
+            receiver: post.user,
+            type: 'reaction',
+            entityId: post._id,
+        });
+    }
     return sendResponseToClient(res, 200, {
         status: 'success',
         message: 'Bày tỏ cảm xúc cho bài viết thành công',

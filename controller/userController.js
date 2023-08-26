@@ -2,6 +2,8 @@ const catchAsync = require('../utils/catchAsync');
 const User = require('../model/userModel');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
+const Notification = require('../model/notificationModel');
+const Conversation = require('../model/conversationModel');
 
 const { sendResponseToClient } = require('../utils/ultils');
 
@@ -97,7 +99,8 @@ exports.getSuggestFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-    const users = await User.find({});
+    const users = await User.find({}).populate('reportsCount').populate('postsCount');
+
     return sendResponseToClient(res, 200, {
         status: 'success',
         data: users,
@@ -191,6 +194,14 @@ exports.addFriend = catchAsync(async (req, res, next) => {
     await user.updateOne({ $push: { pending: currentUser._id } });
     await currentUser.updateOne({ $push: { waitting: user._id } });
 
+    await Notification.create({
+        sender: currentUser._id,
+        receiver: user._id,
+        type: 'friend',
+        content: 'vừa gửi cho bạn lời mời kết bạn',
+        entityId: currentUser._id,
+    });
+
     return sendResponseToClient(res, 200, {
         status: 'success',
         message: 'Gửi yêu cầu kết bạn thành công',
@@ -221,6 +232,22 @@ exports.acceptFriend = catchAsync(async (req, res, next) => {
 
     await user.updateOne({ $push: { friends: currentUser._id }, $pull: { waitting: currentUser._id } });
     await currentUser.updateOne({ $push: { friends: user._id }, $pull: { pending: user._id } });
+
+    await Notification.create({
+        sender: user._id,
+        receiver: currentUser._id,
+        type: 'friend',
+        content: 'đã chấp nhận lời mời kết bạn',
+        entityId: user._id,
+    });
+    const conversation = await Conversation.findOne({
+        members: { $all: [user.id, currentUser.id] },
+    });
+    if (!conversation || conversation.length === 0) {
+        await Conversation.create({
+            members: [user.id, currentUser.id],
+        });
+    }
 
     return sendResponseToClient(res, 200, {
         status: 'success',
