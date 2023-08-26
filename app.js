@@ -97,6 +97,8 @@ const io = require('socket.io')(server, {
         // allowedHeaders: ['my-custom-header'],
         credentials: true,
     },
+    // Fix bug when deploy
+    transports: ['websocket'],
 });
 
 socketIo(io);

@@ -41,6 +41,8 @@ const socketIo = (io) => {
 
         // Receive noti from client
         socket.on('notification sending', (notification) => {
+            console.log('alooooooooooooooooooooooooo');
+            console.log(notification);
             socket.in(notification.receiver.id).emit('notification received', notification);
         });
 
