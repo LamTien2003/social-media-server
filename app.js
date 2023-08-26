@@ -98,7 +98,7 @@ const io = require('socket.io')(server, {
         credentials: true,
     },
     // Fix bug when deploy
-    transports: ['websocket'],
+    transport: 'polling',
 });
 
 socketIo(io);
