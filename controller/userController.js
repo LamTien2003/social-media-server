@@ -99,8 +99,24 @@ exports.getSuggestFriends = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-    const users = await User.find({}).populate('reportsCount').populate('postsCount');
+    const q = req.query.q;
+    let usersQuery = User.find({}).populate('reportsCount').populate('postsCount');
 
+    if (q) {
+        usersQuery = usersQuery.find({
+            $expr: {
+                $regexMatch: {
+                    input: { $concat: ['$firstName', ' ', '$lastName'] },
+                    regex: q, //Your text search here
+                    options: 'i',
+                },
+            },
+        });
+    }
+    // const users = await User.aggregate()
+    //     .project({ fullName: { $concat: ['$firstName', ' ', '$lastName'] } })
+    //     .match({ fullName: q });
+    const users = await usersQuery;
     return sendResponseToClient(res, 200, {
         status: 'success',
         data: users,

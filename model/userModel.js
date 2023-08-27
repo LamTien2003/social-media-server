@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
         },
         coverImage: {
             type: String,
-            default: 'https://res.cloudinary.com/dcv1op3hs/image/upload/v1690001378/users/default-cover_smwodc.png',
+            default: 'https://res.cloudinary.com/dcv1op3hs/image/upload/v1693115038/users/defaultCover_fhumlt.png',
         },
         introduce: {
             type: String,

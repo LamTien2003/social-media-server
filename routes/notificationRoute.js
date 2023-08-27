@@ -6,6 +6,7 @@ const notificationController = require('../controller/notificationController');
 
 router.use(authMiddleware.protectLogin);
 
+router.patch('/seen/:notificationId', notificationController.seenNotification);
 router.get('/', notificationController.getMyNotifications);
 
 module.exports = router;

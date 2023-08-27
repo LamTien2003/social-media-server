@@ -17,6 +17,13 @@ class APIFeatures {
 
         return this;
     }
+    search(fieldName) {
+        const q = this.queryString.q;
+        if (q) {
+            this.query = this.query.find({ [fieldName]: { $regex: q, $options: 'i' } });
+        }
+        return this;
+    }
 
     sort() {
         if (this.queryString.sort) {
