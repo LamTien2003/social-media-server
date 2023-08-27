@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
         photo: {
             type: String,
             default:
-                'https://res.cloudinary.com/dcv1op3hs/image/upload/v1690001287/users/default-avatar-profile-icon-of-social-media-user-vector_krt715.jpg',
+                'https://res.cloudinary.com/dcv1op3hs/image/upload/v1693137815/users/istockphoto-1223671392-612x612_tywdtn.jpg',
         },
         coverImage: {
             type: String,
