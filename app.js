@@ -58,7 +58,7 @@ app.use(
         credentials: true,
         origin: ['http://127.0.0.1:5173', 'https://socialmedia-lamthanhtien.netlify.app'],
         methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
-        allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+        // allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
     }),
 );
 
