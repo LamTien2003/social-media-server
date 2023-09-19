@@ -75,13 +75,11 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: [true, 'Please provide a password'],
             minlength: 8,
             select: false,
         },
         passwordConfirm: {
             type: String,
-            required: [true, 'Please confirm your password'],
             validate: {
                 // This only works on CREATE and SAVE!!! EVEN IF use options new and runValidator in findAndUpdate
                 validator: function (value) {
@@ -90,6 +88,11 @@ const userSchema = new mongoose.Schema(
                 },
                 message: 'Passwords are not the same!',
             },
+        },
+        loginPlatform: {
+            type: String,
+            enum: ['local', 'google', 'facebook'],
+            default: 'local',
         },
         refreshToken: { type: String, select: false },
     },
@@ -113,6 +116,7 @@ userSchema.virtual('reportsCount', {
     default: [],
     count: true,
 });
+
 userSchema.pre(/^find/, function (next) {
     this.select('-__v -createdAt -updatedAt');
     next();

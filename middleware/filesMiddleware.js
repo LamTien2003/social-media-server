@@ -53,9 +53,7 @@ exports.resizePhoto = (destination) => {
     return catchAsync(async (req, res, next) => {
         if (!req.file && !req.files) return next();
         // Single File Upload
-        console.log(1);
-        console.log(req.file);
-        console.log(req.files);
+
         if (!req.files) {
             const fileBuffer = await sharp(req.file.buffer)
                 // .resize(500, 500)

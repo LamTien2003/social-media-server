@@ -2,7 +2,7 @@ const Report = require('../model/reportModel');
 const Post = require('../model/postModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const { sendResponseToClient } = require('../utils/ultils');
+const { sendResponseToClient } = require('../utils/utils');
 
 exports.createReport = catchAsync(async (req, res, next) => {
     const payload = {

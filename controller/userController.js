@@ -5,7 +5,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const Notification = require('../model/notificationModel');
 const Conversation = require('../model/conversationModel');
 
-const { sendResponseToClient } = require('../utils/ultils');
+const { sendResponseToClient } = require('../utils/utils');
 
 const findUserByIdAndPopulate = async (query) => {
     const users = await User.find(query)

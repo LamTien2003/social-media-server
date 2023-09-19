@@ -1,6 +1,6 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
-const { sendResponseToClient } = require('../utils/ultils');
+const { sendResponseToClient } = require('../utils/utils');
 
 const Notification = require('../model/notificationModel');
 

@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const User = require('../model/userModel');
 const AppError = require('../utils/appError');
 
-const { sendResponseToClient } = require('../utils/ultils');
+const { sendResponseToClient } = require('../utils/utils');
 
 const genarateToken = (data, sercetKey, expriredTime) => {
     const token = jwt.sign(data, sercetKey, {
@@ -39,6 +39,7 @@ const createAndSendToken = async (user, statusCode, res) => {
     };
 
     //   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
     res.cookie('jwt', refreshToken, cookieOptions);
     return sendResponseToClient(res, statusCode, {
         status: 'success',
@@ -68,6 +69,16 @@ exports.login = catchAsync(async (req, res, next) => {
     }
 
     createAndSendToken(user, 200, res);
+});
+
+exports.loginWithGoogle = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    // req.session('key', 123);
+    // return res.redirect('http://127.0.0.1:5173/auth');
+
+    // Flow ==> Vì không thể set trực session cho client từ backend nên set cookie jwt refresh Token cho client, khi Client refresh page thì sẽ check login, check kh có
+    // thì sẽ call refreshToken và lấy refresh token vừa được set từ hàm createAndSendToken để lấy token mới =>> Login success
+    return createAndSendToken(user, 200, res);
 });
 
 exports.refreshToken = catchAsync(async (req, res, next) => {
