@@ -12,8 +12,7 @@ const genarateToken = (data, sercetKey, expriredTime) => {
     });
     return token;
 };
-
-const createAndSendToken = async (user, statusCode, res) => {
+const createToken = async (user) => {
     if (user.password) user.password = undefined;
 
     const accessToken = genarateToken(
@@ -28,6 +27,12 @@ const createAndSendToken = async (user, statusCode, res) => {
     );
 
     await User.findByIdAndUpdate(user.id, { refreshToken });
+
+    return [accessToken, refreshToken];
+};
+
+const createAndSendToken = async (user, statusCode, res) => {
+    const [accessToken, refreshToken] = await createToken(user);
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
@@ -78,7 +83,21 @@ exports.loginWithGoogle = catchAsync(async (req, res, next) => {
 
     // Flow ==> Vì không thể set trực session cho client từ backend nên set cookie jwt refresh Token cho client, khi Client refresh page thì sẽ check login, check kh có
     // thì sẽ call refreshToken và lấy refresh token vừa được set từ hàm createAndSendToken để lấy token mới =>> Login success
-    return createAndSendToken(user, 200, res);
+    const [accessToken, refreshToken] = await createToken(user);
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
+        // expires: new Date(Date.now() + 1 * 60 * 1000),
+        // Must set for credentials to set cookie for client
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+    };
+
+    //   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', refreshToken, cookieOptions);
+    res.send('Đăng nhập thành công, hãy tắt cửa sổ để tiếp tục');
+    // res.sendfile(process.cwd() + '/public/closeTabFile.html');
 });
 
 exports.refreshToken = catchAsync(async (req, res, next) => {
